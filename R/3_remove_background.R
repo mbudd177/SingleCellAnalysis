@@ -1,6 +1,6 @@
 #' Remove background noise
 #' @export
-RemoveBackground <- function(meta.data, background, adt.madrix, rna.matrix, mt.pct = 0.14){
+RemoveBackground <- function(meta.data, background, adt.matrix, rna.matrix, mt.pct = 0.14){
 
   background.adt.mtx <- as.matrix(adt.matrix[ , background])
 
