@@ -1,8 +1,6 @@
 #' Remove background noise
 #' @export
-RemoveBackground <- function(meta.data, background, adt.madrix, rna.matrix, mt.pct = 0.14){
-
-  background.adt.mtx <- as.matrix(adt.matrix[ , background])
+RemoveBackground <- function(meta.data, background, adt.matrix, rna.matrix, mt.pct = 0.14){
 
   # calculate statistical thresholds for droplet filtering.
   cellmd <- meta.data[meta.data$drop.class == 'cell', ]
@@ -25,5 +23,22 @@ RemoveBackground <- function(meta.data, background, adt.madrix, rna.matrix, mt.p
              cellmd$mt.prop < mt.pct, ]
   )
 
-  return(qc_filtered)
+  message <- "The number of cells passing QC is: "
+  print(paste0(message, length(qc_filtered)))
+
+  qc.data <- list(
+    background.adt.mtx = as.matrix(adt.matrix[ , background]),
+    cell.adt.raw = as.matrix(adt.matrix[ ,qc_filtered]),
+    cell.rna.raw = rna.matrix[ ,qc_filtered],
+    cellmd = cellmd[qc_filtered, ]
+  )
+
+  return(qc.data)
+}
+
+#' @export
+CheckStains <- function(counts, num = 10) {
+  pm <- sort(apply(counts, 1, max))
+  print(head(pm, num))
+  hist(pm)
 }
